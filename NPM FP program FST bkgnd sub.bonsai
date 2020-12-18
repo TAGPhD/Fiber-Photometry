@@ -1,0 +1,3088 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WorkflowBuilder Version="2.4.1"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xmlns:p1="clr-namespace:Bonsai.Video;assembly=Bonsai.Video"
+                 xmlns:cv="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision"
+                 xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
+                 xmlns:dsp="clr-namespace:Bonsai.Dsp;assembly=Bonsai.Dsp"
+                 xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
+                 xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
+                 xmlns:drw="clr-namespace:Bonsai.Vision.Drawing;assembly=Bonsai.Vision"
+                 xmlns:scr="clr-namespace:Bonsai.Scripting;assembly=Bonsai.Scripting"
+                 xmlns="https://bonsai-rx.org/2018/workflow">
+  <Workflow>
+    <Nodes>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="p1:VideoCaptureDevice">
+            <p1:Index>0</p1:Index>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:FileCapture">
+          <cv:FileName>Trial    14.mpg</cv:FileName>
+          <cv:PlaybackRate>0</cv:PlaybackRate>
+          <cv:StartPosition>0</cv:StartPosition>
+          <cv:PositionUnits>Frames</cv:PositionUnits>
+          <cv:Loop>false</cv:Loop>
+          <cv:Playing>true</cv:Playing>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="PublishSubject">
+        <Name>FP Camera</Name>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>FP</Name>
+        <Description>FP inputs, cropping, saving to file</Description>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>FP Camera</Name>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:Timestamp" />
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="MemberSelector">
+                <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>FP Camera</Name>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="MemberSelector">
+                <Selector>Image</Selector>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="cv:CropPolygon">
+                  <cv:Regions>
+                    <cv:ArrayOfPoint>
+                      <cv:Point>
+                        <cv:X>1610</cv:X>
+                        <cv:Y>795</cv:Y>
+                      </cv:Point>
+                      <cv:Point>
+                        <cv:X>1655</cv:X>
+                        <cv:Y>795</cv:Y>
+                      </cv:Point>
+                      <cv:Point>
+                        <cv:X>1655</cv:X>
+                        <cv:Y>843</cv:Y>
+                      </cv:Point>
+                      <cv:Point>
+                        <cv:X>1610</cv:X>
+                        <cv:Y>843</cv:Y>
+                      </cv:Point>
+                    </cv:ArrayOfPoint>
+                  </cv:Regions>
+                  <cv:MaskType>ToZero</cv:MaskType>
+                  <cv:FillValue>
+                    <cv:Val0>0</cv:Val0>
+                    <cv:Val1>0</cv:Val1>
+                    <cv:Val2>0</cv:Val2>
+                    <cv:Val3>0</cv:Val3>
+                  </cv:FillValue>
+                </Combinator>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>470 Top unmarked</Name>
+              <Description>Top fiber on green side (right)</Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="dsp:Average" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Val0</Selector>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="PublishSubject">
+                    <Name>FP Output 470 unmrk</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="2" To="4" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="cv:CropPolygon">
+                  <cv:Regions>
+                    <cv:ArrayOfPoint>
+                      <cv:Point>
+                        <cv:X>1651</cv:X>
+                        <cv:Y>864</cv:Y>
+                      </cv:Point>
+                      <cv:Point>
+                        <cv:X>1693</cv:X>
+                        <cv:Y>864</cv:Y>
+                      </cv:Point>
+                      <cv:Point>
+                        <cv:X>1693</cv:X>
+                        <cv:Y>912</cv:Y>
+                      </cv:Point>
+                      <cv:Point>
+                        <cv:X>1651</cv:X>
+                        <cv:Y>912</cv:Y>
+                      </cv:Point>
+                    </cv:ArrayOfPoint>
+                  </cv:Regions>
+                  <cv:MaskType>ToZero</cv:MaskType>
+                  <cv:FillValue>
+                    <cv:Val0>0</cv:Val0>
+                    <cv:Val1>0</cv:Val1>
+                    <cv:Val2>0</cv:Val2>
+                    <cv:Val3>0</cv:Val3>
+                  </cv:FillValue>
+                </Combinator>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>470 bottom marked</Name>
+              <Description>Bottom fiber of green side (right)</Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="dsp:Average" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Val0</Selector>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="PublishSubject">
+                    <Name>FP Output 470 mrk</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="2" To="4" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="cv:CropPolygon">
+                  <cv:Regions>
+                    <cv:ArrayOfPoint>
+                      <cv:Point>
+                        <cv:X>288</cv:X>
+                        <cv:Y>737</cv:Y>
+                      </cv:Point>
+                      <cv:Point>
+                        <cv:X>333</cv:X>
+                        <cv:Y>737</cv:Y>
+                      </cv:Point>
+                      <cv:Point>
+                        <cv:X>333</cv:X>
+                        <cv:Y>783</cv:Y>
+                      </cv:Point>
+                      <cv:Point>
+                        <cv:X>288</cv:X>
+                        <cv:Y>783</cv:Y>
+                      </cv:Point>
+                    </cv:ArrayOfPoint>
+                  </cv:Regions>
+                  <cv:MaskType>ToZero</cv:MaskType>
+                  <cv:FillValue>
+                    <cv:Val0>0</cv:Val0>
+                    <cv:Val1>0</cv:Val1>
+                    <cv:Val2>0</cv:Val2>
+                    <cv:Val3>0</cv:Val3>
+                  </cv:FillValue>
+                </Combinator>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>560 top unmarked</Name>
+              <Description>Top fiber of red side (left)</Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="dsp:Average" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Val0</Selector>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="PublishSubject">
+                    <Name>FP Output 560 unmrk</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="2" To="4" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="cv:CropPolygon">
+                  <cv:Regions>
+                    <cv:ArrayOfPoint>
+                      <cv:Point>
+                        <cv:X>245</cv:X>
+                        <cv:Y>809</cv:Y>
+                      </cv:Point>
+                      <cv:Point>
+                        <cv:X>289</cv:X>
+                        <cv:Y>809</cv:Y>
+                      </cv:Point>
+                      <cv:Point>
+                        <cv:X>289</cv:X>
+                        <cv:Y>856</cv:Y>
+                      </cv:Point>
+                      <cv:Point>
+                        <cv:X>245</cv:X>
+                        <cv:Y>856</cv:Y>
+                      </cv:Point>
+                    </cv:ArrayOfPoint>
+                  </cv:Regions>
+                  <cv:MaskType>ToZero</cv:MaskType>
+                  <cv:FillValue>
+                    <cv:Val0>0</cv:Val0>
+                    <cv:Val1>0</cv:Val1>
+                    <cv:Val2>0</cv:Val2>
+                    <cv:Val3>0</cv:Val3>
+                  </cv:FillValue>
+                </Combinator>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>560 bottom marked</Name>
+              <Description>Bottom fiber of red side (left)</Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="dsp:Average" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Val0</Selector>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="PublishSubject">
+                    <Name>FP Output 560 mrk</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="2" To="4" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>FP Camera</Name>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:Timestamp" />
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:Zip" />
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>FPIntensity CSV</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="PropertyMapping">
+                <PropertyMappings>
+                  <Property Name="FileName" />
+                </PropertyMappings>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="io:CsvWriter">
+                <io:FileName>TESTfp_.csv</io:FileName>
+                <io:Append>false</io:Append>
+                <io:Overwrite>false</io:Overwrite>
+                <io:Suffix>Timestamp</io:Suffix>
+                <io:IncludeHeader>false</io:IncludeHeader>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="PublishSubject">
+              <Name>Tot ms in day Output</Name>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="2" To="15" Label="Source1" />
+            <Edge From="2" To="19" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
+            <Edge From="4" To="7" Label="Source1" />
+            <Edge From="4" To="9" Label="Source1" />
+            <Edge From="4" To="11" Label="Source1" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="6" To="15" Label="Source2" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="15" Label="Source3" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="10" To="15" Label="Source4" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="12" To="15" Label="Source5" />
+            <Edge From="13" To="14" Label="Source1" />
+            <Edge From="14" To="15" Label="Source6" />
+            <Edge From="15" To="18" Label="Source1" />
+            <Edge From="16" To="17" Label="Source1" />
+            <Edge From="17" To="18" Label="Source2" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="GroupWorkflow">
+          <Name>Key Press Tracking</Name>
+          <Description>Keeps track of key presses during experiment, if enabled. </Description>
+          <Workflow>
+            <Nodes>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="wie:KeyDown">
+                  <wie:Filter>None</wie:Filter>
+                  <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Timestamp" />
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Zip" />
+              </Expression>
+              <Expression xsi:type="io:CsvWriter">
+                <io:FileName>TESTkd_.csv</io:FileName>
+                <io:Append>false</io:Append>
+                <io:Overwrite>false</io:Overwrite>
+                <io:Suffix>Timestamp</io:Suffix>
+                <io:IncludeHeader>false</io:IncludeHeader>
+                <io:CompatibilityMode>true</io:CompatibilityMode>
+              </Expression>
+            </Nodes>
+            <Edges>
+              <Edge From="0" To="1" Label="Source1" />
+              <Edge From="0" To="3" Label="Source1" />
+              <Edge From="1" To="2" Label="Source1" />
+              <Edge From="2" To="3" Label="Source2" />
+              <Edge From="3" To="4" Label="Source1" />
+            </Edges>
+          </Workflow>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>Exp Info for Naming</Name>
+        <Description>Provides naming scheme, and location to save</Description>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Value" DisplayName="Directory" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="StringProperty">
+                <Value>C:\Users\tglaze\Box\FP Testing\</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="StringProperty">
+                <Value>_</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="StringProperty">
+                <Value>_</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="StringProperty">
+                <Value>_</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Value" DisplayName="exp name" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="StringProperty">
+                <Value>FST</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Value" DisplayName="Cage ID" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="StringProperty">
+                <Value>C333</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Value" DisplayName="Mouse ID" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="StringProperty">
+                <Value>DatCreM2</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="Add" />
+            <Expression xsi:type="ReplaySubject">
+              <Name>File naming info</Name>
+              <BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>TimeStamp, full date, string</Name>
+              <Description>contains full current date/time, as a string for naming purposes</Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>_</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>_</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>_</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>_(</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="IntProperty">
+                      <Value>0</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp.Year</Selector>
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format />
+                    <Selector>it</Selector>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp.Month</Selector>
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format />
+                    <Selector>it</Selector>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="MemberSelector">
+                      <Selector>Timestamp.DateTime.Day</Selector>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp.Day</Selector>
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format />
+                    <Selector>it</Selector>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="MemberSelector">
+                      <Selector>Timestamp.DateTime.TimeOfDay.Hours,Timestamp.DateTime.TimeOfDay.Minutes</Selector>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp.Hour</Selector>
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format />
+                    <Selector>it</Selector>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp.Minute</Selector>
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format />
+                    <Selector>it</Selector>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp.Millisecond</Selector>
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format />
+                    <Selector>it</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>.</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>.</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>)</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>current date</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="23" Label="Source1" />
+                  <Edge From="1" To="23" Label="Source3" />
+                  <Edge From="2" To="23" Label="Source5" />
+                  <Edge From="3" To="23" Label="Source7" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source1" />
+                  <Edge From="5" To="8" Label="Source1" />
+                  <Edge From="5" To="10" Label="Source1" />
+                  <Edge From="5" To="13" Label="Source1" />
+                  <Edge From="5" To="16" Label="Source1" />
+                  <Edge From="5" To="18" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="7" To="23" Label="Source2" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="9" To="23" Label="Source4" />
+                  <Edge From="10" To="11" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="23" Label="Source6" />
+                  <Edge From="13" To="14" Label="Source1" />
+                  <Edge From="14" To="15" Label="Source1" />
+                  <Edge From="15" To="23" Label="Source8" />
+                  <Edge From="16" To="17" Label="Source1" />
+                  <Edge From="17" To="23" Label="Source10" />
+                  <Edge From="18" To="19" Label="Source1" />
+                  <Edge From="19" To="23" Label="Source12" />
+                  <Edge From="20" To="23" Label="Source9" />
+                  <Edge From="21" To="23" Label="Source11" />
+                  <Edge From="22" To="23" Label="Source13" />
+                  <Edge From="23" To="24" Label="Source1" />
+                  <Edge From="24" To="25" Label="Source1" />
+                  <Edge From="25" To="26" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>File types</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" DisplayName=".CSV" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>_.CSV</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>CSV file</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" DisplayName=".JPG" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>_.jpg</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>JPG file</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" DisplayName=".AVI" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>_.AVI</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>AVI file</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>Full File Names</Name>
+              <Description>Naming schemes for each type of file output for the workflow</Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" DisplayName="Vid_Top" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>TopCamera</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>File naming info</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>current date</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>AVI file</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>TopCam AVI</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" DisplayName="Vid_Side" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>SideCamera</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>File naming info</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>current date</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>AVI file</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>SideCam AVI</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" DisplayName="Centroid_Top" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>CentroidTop</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>File naming info</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>current date</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>CSV file</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>CentroidTop CSV</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" DisplayName="Centroid_Side" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>CentroidSIde</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>File naming info</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>CSV file</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>current date</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>CentroidSide CSV</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" DisplayName="FP_Cam" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>FPIntensityValues</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>File naming info</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>current date</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>CSV file</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>FPIntensity CSV</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" DisplayName="Dist_Trvl_Top" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>DistanceTop</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>File naming info</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>current date</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>CSV file</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>DistanceTop CSV</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="GroupWorkflow">
+                      <Name>Old X,Y Tracking Filenames</Name>
+                      <Workflow>
+                        <Nodes>
+                          <Expression xsi:type="SubscribeSubject">
+                            <Name>File naming info</Name>
+                          </Expression>
+                          <Expression xsi:type="ExternalizedMapping">
+                            <Property Name="Value" DisplayName="MT_XSide" />
+                          </Expression>
+                          <Expression xsi:type="Combinator">
+                            <Combinator xsi:type="StringProperty">
+                              <Value>MotionTrackXSide</Value>
+                            </Combinator>
+                          </Expression>
+                          <Expression xsi:type="SubscribeSubject">
+                            <Name>current date</Name>
+                          </Expression>
+                          <Expression xsi:type="SubscribeSubject">
+                            <Name>CSV file</Name>
+                          </Expression>
+                          <Expression xsi:type="Combinator">
+                            <Combinator xsi:type="rx:Zip" />
+                          </Expression>
+                          <Expression xsi:type="Add" />
+                          <Expression xsi:type="ReplaySubject">
+                            <Name>MotionTrackXSide CSV</Name>
+                            <BufferSize xsi:nil="true" />
+                          </Expression>
+                          <Expression xsi:type="ExternalizedMapping">
+                            <Property Name="Value" DisplayName="MT_YSide" />
+                          </Expression>
+                          <Expression xsi:type="Combinator">
+                            <Combinator xsi:type="StringProperty">
+                              <Value>MotionTrackYSide</Value>
+                            </Combinator>
+                          </Expression>
+                          <Expression xsi:type="SubscribeSubject">
+                            <Name>File naming info</Name>
+                          </Expression>
+                          <Expression xsi:type="SubscribeSubject">
+                            <Name>current date</Name>
+                          </Expression>
+                          <Expression xsi:type="SubscribeSubject">
+                            <Name>CSV file</Name>
+                          </Expression>
+                          <Expression xsi:type="Combinator">
+                            <Combinator xsi:type="rx:Zip" />
+                          </Expression>
+                          <Expression xsi:type="Add" />
+                          <Expression xsi:type="ReplaySubject">
+                            <Name>MotionTrackYSide CSV</Name>
+                            <BufferSize xsi:nil="true" />
+                          </Expression>
+                          <Expression xsi:type="ExternalizedMapping">
+                            <Property Name="Value" DisplayName="MT_XTop" />
+                          </Expression>
+                          <Expression xsi:type="Combinator">
+                            <Combinator xsi:type="StringProperty">
+                              <Value>MotionTrackXTop</Value>
+                            </Combinator>
+                          </Expression>
+                          <Expression xsi:type="SubscribeSubject">
+                            <Name>File naming info</Name>
+                          </Expression>
+                          <Expression xsi:type="SubscribeSubject">
+                            <Name>current date</Name>
+                          </Expression>
+                          <Expression xsi:type="SubscribeSubject">
+                            <Name>CSV file</Name>
+                          </Expression>
+                          <Expression xsi:type="Combinator">
+                            <Combinator xsi:type="rx:Zip" />
+                          </Expression>
+                          <Expression xsi:type="Add" />
+                          <Expression xsi:type="ReplaySubject">
+                            <Name>MotionTrackXTop CSV</Name>
+                            <BufferSize xsi:nil="true" />
+                          </Expression>
+                          <Expression xsi:type="ExternalizedMapping">
+                            <Property Name="Value" DisplayName="MT_YTop" />
+                          </Expression>
+                          <Expression xsi:type="Combinator">
+                            <Combinator xsi:type="StringProperty">
+                              <Value>MotionTrackYTop</Value>
+                            </Combinator>
+                          </Expression>
+                          <Expression xsi:type="SubscribeSubject">
+                            <Name>File naming info</Name>
+                          </Expression>
+                          <Expression xsi:type="SubscribeSubject">
+                            <Name>current date</Name>
+                          </Expression>
+                          <Expression xsi:type="SubscribeSubject">
+                            <Name>CSV file</Name>
+                          </Expression>
+                          <Expression xsi:type="Combinator">
+                            <Combinator xsi:type="rx:Zip" />
+                          </Expression>
+                          <Expression xsi:type="Add" />
+                          <Expression xsi:type="ReplaySubject">
+                            <Name>MotionTrackYTop CSV</Name>
+                            <BufferSize xsi:nil="true" />
+                          </Expression>
+                        </Nodes>
+                        <Edges>
+                          <Edge From="0" To="5" Label="Source1" />
+                          <Edge From="1" To="2" Label="Source1" />
+                          <Edge From="2" To="5" Label="Source2" />
+                          <Edge From="3" To="5" Label="Source3" />
+                          <Edge From="4" To="5" Label="Source4" />
+                          <Edge From="5" To="6" Label="Source1" />
+                          <Edge From="6" To="7" Label="Source1" />
+                          <Edge From="8" To="9" Label="Source1" />
+                          <Edge From="9" To="13" Label="Source2" />
+                          <Edge From="10" To="13" Label="Source1" />
+                          <Edge From="11" To="13" Label="Source3" />
+                          <Edge From="12" To="13" Label="Source4" />
+                          <Edge From="13" To="14" Label="Source1" />
+                          <Edge From="14" To="15" Label="Source1" />
+                          <Edge From="16" To="17" Label="Source1" />
+                          <Edge From="17" To="21" Label="Source2" />
+                          <Edge From="18" To="21" Label="Source1" />
+                          <Edge From="19" To="21" Label="Source3" />
+                          <Edge From="20" To="21" Label="Source4" />
+                          <Edge From="21" To="22" Label="Source1" />
+                          <Edge From="22" To="23" Label="Source1" />
+                          <Edge From="24" To="25" Label="Source1" />
+                          <Edge From="25" To="29" Label="Source2" />
+                          <Edge From="26" To="29" Label="Source1" />
+                          <Edge From="27" To="29" Label="Source3" />
+                          <Edge From="28" To="29" Label="Source4" />
+                          <Edge From="29" To="30" Label="Source1" />
+                          <Edge From="30" To="31" Label="Source1" />
+                        </Edges>
+                      </Workflow>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" DisplayName="Dist_Trvl_Side" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>DistanceSide</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>File naming info</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>current date</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>CSV file</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>DistanceSide CSV</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" DisplayName="Pxl_Chng_Top" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>PixelAreaChangeTop</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>File naming info</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>current date</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>CSV file</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>PxlChangeTop CSV</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" DisplayName="Pxl_Chng_Side" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>PixelAreaChangeSide</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>File naming info</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>current date</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>CSV file</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="ReplaySubject">
+                    <Name>PxlChangeSide CSV</Name>
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty" />
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>File naming info</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>current date</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>CSV file</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="ReplaySubject">
+                    <BufferSize xsi:nil="true" />
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="5" Label="Source2" />
+                  <Edge From="2" To="5" Label="Source1" />
+                  <Edge From="3" To="5" Label="Source3" />
+                  <Edge From="4" To="5" Label="Source4" />
+                  <Edge From="5" To="6" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="9" To="13" Label="Source2" />
+                  <Edge From="10" To="13" Label="Source1" />
+                  <Edge From="11" To="13" Label="Source3" />
+                  <Edge From="12" To="13" Label="Source4" />
+                  <Edge From="13" To="14" Label="Source1" />
+                  <Edge From="14" To="15" Label="Source1" />
+                  <Edge From="16" To="17" Label="Source1" />
+                  <Edge From="17" To="21" Label="Source2" />
+                  <Edge From="18" To="21" Label="Source1" />
+                  <Edge From="19" To="21" Label="Source3" />
+                  <Edge From="20" To="21" Label="Source4" />
+                  <Edge From="21" To="22" Label="Source1" />
+                  <Edge From="22" To="23" Label="Source1" />
+                  <Edge From="24" To="25" Label="Source1" />
+                  <Edge From="25" To="29" Label="Source2" />
+                  <Edge From="26" To="29" Label="Source1" />
+                  <Edge From="27" To="29" Label="Source4" />
+                  <Edge From="28" To="29" Label="Source3" />
+                  <Edge From="29" To="30" Label="Source1" />
+                  <Edge From="30" To="31" Label="Source1" />
+                  <Edge From="32" To="33" Label="Source1" />
+                  <Edge From="33" To="37" Label="Source2" />
+                  <Edge From="34" To="37" Label="Source1" />
+                  <Edge From="35" To="37" Label="Source3" />
+                  <Edge From="36" To="37" Label="Source4" />
+                  <Edge From="37" To="38" Label="Source1" />
+                  <Edge From="38" To="39" Label="Source1" />
+                  <Edge From="40" To="41" Label="Source1" />
+                  <Edge From="41" To="45" Label="Source2" />
+                  <Edge From="42" To="45" Label="Source1" />
+                  <Edge From="43" To="45" Label="Source3" />
+                  <Edge From="44" To="45" Label="Source4" />
+                  <Edge From="45" To="46" Label="Source1" />
+                  <Edge From="46" To="47" Label="Source1" />
+                  <Edge From="49" To="50" Label="Source1" />
+                  <Edge From="50" To="54" Label="Source2" />
+                  <Edge From="51" To="54" Label="Source1" />
+                  <Edge From="52" To="54" Label="Source3" />
+                  <Edge From="53" To="54" Label="Source4" />
+                  <Edge From="54" To="55" Label="Source1" />
+                  <Edge From="55" To="56" Label="Source1" />
+                  <Edge From="57" To="58" Label="Source1" />
+                  <Edge From="58" To="62" Label="Source2" />
+                  <Edge From="59" To="62" Label="Source1" />
+                  <Edge From="60" To="62" Label="Source3" />
+                  <Edge From="61" To="62" Label="Source4" />
+                  <Edge From="62" To="63" Label="Source1" />
+                  <Edge From="63" To="64" Label="Source1" />
+                  <Edge From="65" To="66" Label="Source1" />
+                  <Edge From="66" To="70" Label="Source2" />
+                  <Edge From="67" To="70" Label="Source1" />
+                  <Edge From="68" To="70" Label="Source3" />
+                  <Edge From="69" To="70" Label="Source4" />
+                  <Edge From="70" To="71" Label="Source1" />
+                  <Edge From="71" To="72" Label="Source1" />
+                  <Edge From="73" To="74" Label="Source1" />
+                  <Edge From="74" To="78" Label="Source2" />
+                  <Edge From="75" To="78" Label="Source1" />
+                  <Edge From="76" To="78" Label="Source3" />
+                  <Edge From="77" To="78" Label="Source4" />
+                  <Edge From="78" To="79" Label="Source1" />
+                  <Edge From="79" To="80" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="11" Label="Source1" />
+            <Edge From="2" To="11" Label="Source5" />
+            <Edge From="3" To="11" Label="Source3" />
+            <Edge From="4" To="11" Label="Source7" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="6" To="11" Label="Source2" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="11" Label="Source4" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="10" To="11" Label="Source6" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="12" To="13" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>Top Camera</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="cv:CameraCapture">
+                  <cv:Index>0</cv:Index>
+                  <cv:CaptureProperties />
+                </Combinator>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="cv:FileCapture">
+                <cv:FileName>Trial    14.mpg</cv:FileName>
+                <cv:PlaybackRate>0</cv:PlaybackRate>
+                <cv:StartPosition>0</cv:StartPosition>
+                <cv:PositionUnits>Frames</cv:PositionUnits>
+                <cv:Loop>false</cv:Loop>
+                <cv:Playing>true</cv:Playing>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>FP Camera</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:SubscribeWhen" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Timestamp" />
+            </Expression>
+            <Expression xsi:type="PublishSubject">
+              <Name>TimestampedImageTop</Name>
+            </Expression>
+            <Expression xsi:type="PublishSubject">
+              <Name>TopCamStream</Name>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>TimestampCamTop</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>TimestampedImageTop</Name>
+                  </Expression>
+                  <Expression xsi:type="InputMapping">
+                    <PropertyMappings>
+                      <Property Name="Size" Selector="Value.Size" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="drw:CreateCanvas">
+                      <drw:Size>
+                        <drw:Width>960</drw:Width>
+                        <drw:Height>720</drw:Height>
+                      </drw:Size>
+                      <drw:Depth>U8</drw:Depth>
+                      <drw:Channels>3</drw:Channels>
+                      <drw:Color>
+                        <drw:Val0>0</drw:Val0>
+                        <drw:Val1>0</drw:Val1>
+                        <drw:Val2>0</drw:Val2>
+                        <drw:Val3>0</drw:Val3>
+                      </drw:Color>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>TimestampedImageTop</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Value</Selector>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="Image" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="drw:AddImage">
+                      <drw:Destination>
+                        <drw:X>0</drw:X>
+                        <drw:Y>0</drw:Y>
+                        <drw:Width>0</drw:Width>
+                        <drw:Height>0</drw:Height>
+                      </drw:Destination>
+                      <drw:Interpolation>Linear</drw:Interpolation>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>TimestampedImageTop</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp</Selector>
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format>{0:o}</Format>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="Text" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="drw:AddText">
+                      <drw:Text>2020-06-08T14:52:30.0702976-05:00</drw:Text>
+                      <drw:Alignment>Near</drw:Alignment>
+                      <drw:LineAlignment>Near</drw:LineAlignment>
+                      <drw:TextRenderingHint>AntiAliasGridFit</drw:TextRenderingHint>
+                      <drw:Color>
+                        <drw:Val0>255</drw:Val0>
+                        <drw:Val1>255</drw:Val1>
+                        <drw:Val2>255</drw:Val2>
+                        <drw:Val3>255</drw:Val3>
+                      </drw:Color>
+                      <drw:Font>Microsoft Sans Serif, 7.8pt</drw:Font>
+                      <drw:Origin>
+                        <drw:X>0</drw:X>
+                        <drw:Y>450</drw:Y>
+                      </drw:Origin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="drw:DrawCanvas" />
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="6" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source2" />
+                  <Edge From="6" To="11" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="10" To="11" Label="Source2" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>TopCam AVI</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="cv:VideoWriter">
+                  <cv:FileName />
+                  <cv:Suffix>None</cv:Suffix>
+                  <cv:Buffered>true</cv:Buffered>
+                  <cv:Overwrite>false</cv:Overwrite>
+                  <cv:FourCC>FMP4</cv:FourCC>
+                  <cv:FrameRate>30</cv:FrameRate>
+                  <cv:FrameSize>
+                    <cv:Width>0</cv:Width>
+                    <cv:Height>0</cv:Height>
+                  </cv:FrameSize>
+                  <cv:ResizeInterpolation>NearestNeighbor</cv:ResizeInterpolation>
+                </Combinator>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>TopCamStream</Name>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>bkgd sub tracking, top</Name>
+              <Description>Tracking of total number of pixels change over time</Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:CropPolygon">
+                      <cv:Regions>
+                        <cv:ArrayOfPoint>
+                          <cv:Point>
+                            <cv:X>53</cv:X>
+                            <cv:Y>117</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>463</cv:X>
+                            <cv:Y>118</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>472</cv:X>
+                            <cv:Y>239</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>492</cv:X>
+                            <cv:Y>245</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>509</cv:X>
+                            <cv:Y>234</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>517</cv:X>
+                            <cv:Y>119</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>927</cv:X>
+                            <cv:Y>124</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>929</cv:X>
+                            <cv:Y>547</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>513</cv:X>
+                            <cv:Y>540</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>511</cv:X>
+                            <cv:Y>457</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>504</cv:X>
+                            <cv:Y>421</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>488</cv:X>
+                            <cv:Y>412</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>476</cv:X>
+                            <cv:Y>420</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>459</cv:X>
+                            <cv:Y>458</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>458</cv:X>
+                            <cv:Y>540</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>48</cv:X>
+                            <cv:Y>539</cv:Y>
+                          </cv:Point>
+                        </cv:ArrayOfPoint>
+                      </cv:Regions>
+                      <cv:MaskType>ToZero</cv:MaskType>
+                      <cv:FillValue>
+                        <cv:Val0>0</cv:Val0>
+                        <cv:Val1>0</cv:Val1>
+                        <cv:Val2>0</cv:Val2>
+                        <cv:Val3>0</cv:Val3>
+                      </cv:FillValue>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:Grayscale" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:BackgroundSubtraction">
+                      <cv:BackgroundFrames>60</cv:BackgroundFrames>
+                      <cv:AdaptationRate>0</cv:AdaptationRate>
+                      <cv:ThresholdValue>18</cv:ThresholdValue>
+                      <cv:ThresholdType>Binary</cv:ThresholdType>
+                      <cv:SubtractionMethod>Dark</cv:SubtractionMethod>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="PublishSubject">
+                    <Name>bkgd sub, top</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:FindContours">
+                      <cv:Mode>External</cv:Mode>
+                      <cv:Method>ChainApproxNone</cv:Method>
+                      <cv:Offset>
+                        <cv:X>0</cv:X>
+                        <cv:Y>0</cv:Y>
+                      </cv:Offset>
+                      <cv:MinArea xsi:nil="true" />
+                      <cv:MaxArea xsi:nil="true" />
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:BinaryRegionAnalysis" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:LargestBinaryRegion" />
+                  </Expression>
+                  <Expression xsi:type="PublishSubject">
+                    <Name>bin region, top</Name>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="Combinator">
+                      <Combinator xsi:type="cv:ConvertColor">
+                        <cv:Conversion>Bgr2Hsv</cv:Conversion>
+                      </Combinator>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="Combinator">
+                      <Combinator xsi:type="cv:HsvThreshold">
+                        <cv:Lower>
+                          <cv:Val0>1</cv:Val0>
+                          <cv:Val1>0</cv:Val1>
+                          <cv:Val2>0</cv:Val2>
+                          <cv:Val3>0</cv:Val3>
+                        </cv:Lower>
+                        <cv:Upper>
+                          <cv:Val0>179</cv:Val0>
+                          <cv:Val1>255</cv:Val1>
+                          <cv:Val2>64</cv:Val2>
+                          <cv:Val3>0</cv:Val3>
+                        </cv:Upper>
+                      </Combinator>
+                    </Builder>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="10" To="11" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="cv:Centroid" />
+            </Expression>
+            <Expression xsi:type="PublishSubject">
+              <Name>Centroid, Top</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>bin region, top</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Area</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Skip">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="Subtract" />
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dsp:Abs" />
+            </Expression>
+            <Expression xsi:type="GreaterThan">
+              <Operand xsi:type="FloatProperty">
+                <Value>20</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="scr:PythonTransform">
+              <scr:Name>Turn Bool to Binomial</scr:Name>
+              <scr:Script>@returns(int)
+def process(tf):
+  if tf == True:
+    return int(True)
+  elif tf == False:
+    return int(False)</scr:Script>
+            </Expression>
+            <Expression xsi:type="GreaterThan">
+              <Operand xsi:type="DoubleProperty">
+                <Value>40</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="scr:PythonTransform">
+              <scr:Name>Turn Bool to Binomial</scr:Name>
+              <scr:Script>@returns(int)
+def process(tf):
+  if tf == True:
+    return int(True)+1
+  elif tf == False:
+    return int(False)</scr:Script>
+            </Expression>
+            <Expression xsi:type="GreaterThan">
+              <Operand xsi:type="DoubleProperty">
+                <Value>60</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="scr:PythonTransform">
+              <scr:Name>Turn Bool to Binomial</scr:Name>
+              <scr:Script>@returns(int)
+def process(tf):
+  if tf == True:
+    return int(True)+2
+  elif tf == False:
+    return int(False)</scr:Script>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>TimeStamp, ms only</Name>
+              <Description>Timestamp, first total milliseconds in day at time of recording, then full date timestamp. Then zipped for ease of use. </Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Zip" />
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="PublishSubject">
+              <Name>Pixel Top Output</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>PxlChangeTop CSV</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="io:CsvWriter">
+              <io:FileName>C:\Users\tglaze\Box\FP Testing\FST_C333_DatCreM2_PixelAreaChangeTop_2020_6_8_(14.52.230)_.CSV</io:FileName>
+              <io:Append>false</io:Append>
+              <io:Overwrite>false</io:Overwrite>
+              <io:Suffix>Timestamp</io:Suffix>
+              <io:IncludeHeader>false</io:IncludeHeader>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Centroid, Top</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>X</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Skip">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Y</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Skip">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="scr:PythonTransform">
+              <scr:Script>import math
+
+@returns(float)
+
+def process(val):
+  distance = math.sqrt(((val[0]-val[1])**2)+((val[2]-val[3])**2))
+  return distance</scr:Script>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>TimeStamp, ms only</Name>
+              <Description>Timestamp, first total milliseconds in day at time of recording, then full date timestamp. Then zipped for ease of use. </Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Zip" />
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>DistanceTop CSV</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="io:CsvWriter">
+              <io:FileName>C:\Users\tglaze\Box\FP Testing\FST_C333_DatCreM2_DistanceTop_2020_6_8_(14.52.230)_.CSV</io:FileName>
+              <io:Append>false</io:Append>
+              <io:Overwrite>false</io:Overwrite>
+              <io:Suffix>Timestamp</io:Suffix>
+              <io:IncludeHeader>false</io:IncludeHeader>
+            </Expression>
+            <Expression xsi:type="PublishSubject">
+              <Name>Distance Top Output</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>CentroidTop CSV</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Centroid, Top</Name>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>TimeStamp, ms only,TopCam</Name>
+              <Description>Timestamp, total milliseconds in day at time of recording. </Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source2" />
+                  <Edge From="2" To="3" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="io:CsvWriter">
+                <io:FileName>C:\Users\tglaze\Box\FP Testing\FST_C333_DatCreM2_CentroidTop_2020_6_8_(10.20.878)_.CSV</io:FileName>
+                <io:Append>false</io:Append>
+                <io:Overwrite>false</io:Overwrite>
+                <io:Suffix>Timestamp</io:Suffix>
+                <io:IncludeHeader>false</io:IncludeHeader>
+              </Builder>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="3" Label="Source1" />
+            <Edge From="2" To="3" Label="Source2" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="3" To="6" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
+            <Edge From="7" To="10" Label="Source1" />
+            <Edge From="8" To="9" Label="Source1" />
+            <Edge From="9" To="10" Label="Source2" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="12" To="13" Label="Source1" />
+            <Edge From="13" To="14" Label="Source1" />
+            <Edge From="15" To="16" Label="Source1" />
+            <Edge From="16" To="18" Label="Source1" />
+            <Edge From="16" To="17" Label="Source1" />
+            <Edge From="17" To="18" Label="Source2" />
+            <Edge From="18" To="19" Label="Source1" />
+            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="20" To="23" Label="Source1" />
+            <Edge From="20" To="25" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="22" To="28" Label="Source1" />
+            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="24" To="28" Label="Source2" />
+            <Edge From="25" To="26" Label="Source1" />
+            <Edge From="26" To="28" Label="Source3" />
+            <Edge From="26" To="27" Label="Source1" />
+            <Edge From="27" To="28" Label="Source4" />
+            <Edge From="28" To="29" Label="Source1" />
+            <Edge From="29" To="32" Label="Source1" />
+            <Edge From="30" To="31" Label="Source1" />
+            <Edge From="31" To="32" Label="Source2" />
+            <Edge From="33" To="34" Label="Source1" />
+            <Edge From="33" To="36" Label="Source1" />
+            <Edge From="34" To="38" Label="Source1" />
+            <Edge From="34" To="35" Label="Source1" />
+            <Edge From="35" To="38" Label="Source2" />
+            <Edge From="36" To="38" Label="Source3" />
+            <Edge From="36" To="37" Label="Source1" />
+            <Edge From="37" To="38" Label="Source4" />
+            <Edge From="38" To="39" Label="Source1" />
+            <Edge From="39" To="41" Label="Source1" />
+            <Edge From="39" To="40" Label="Source1" />
+            <Edge From="39" To="45" Label="Source1" />
+            <Edge From="40" To="41" Label="Source2" />
+            <Edge From="41" To="44" Label="Source1" />
+            <Edge From="42" To="43" Label="Source1" />
+            <Edge From="43" To="44" Label="Source2" />
+            <Edge From="46" To="47" Label="Source1" />
+            <Edge From="47" To="51" Label="Source2" />
+            <Edge From="48" To="50" Label="Source1" />
+            <Edge From="48" To="49" Label="Source1" />
+            <Edge From="49" To="50" Label="Source2" />
+            <Edge From="50" To="51" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>Side Camera</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="cv:CameraCapture">
+                  <cv:Index>0</cv:Index>
+                  <cv:CaptureProperties />
+                </Combinator>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="cv:FileCapture">
+                <cv:FileName>Trial    14.mpg</cv:FileName>
+                <cv:PlaybackRate>0</cv:PlaybackRate>
+                <cv:StartPosition>0</cv:StartPosition>
+                <cv:PositionUnits>Frames</cv:PositionUnits>
+                <cv:Loop>false</cv:Loop>
+                <cv:Playing>true</cv:Playing>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>FP Camera</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:SubscribeWhen" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Timestamp" />
+            </Expression>
+            <Expression xsi:type="PublishSubject">
+              <Name>TimestampedImageSide</Name>
+            </Expression>
+            <Expression xsi:type="PublishSubject">
+              <Name>SideCamStream</Name>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>TimestampCamSide</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>TimestampedImageSide</Name>
+                  </Expression>
+                  <Expression xsi:type="InputMapping">
+                    <PropertyMappings>
+                      <Property Name="Size" Selector="Value.Size" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="drw:CreateCanvas">
+                      <drw:Size>
+                        <drw:Width>960</drw:Width>
+                        <drw:Height>720</drw:Height>
+                      </drw:Size>
+                      <drw:Depth>U8</drw:Depth>
+                      <drw:Channels>3</drw:Channels>
+                      <drw:Color>
+                        <drw:Val0>0</drw:Val0>
+                        <drw:Val1>0</drw:Val1>
+                        <drw:Val2>0</drw:Val2>
+                        <drw:Val3>0</drw:Val3>
+                      </drw:Color>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>TimestampedImageSide</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Value</Selector>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="Image" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="drw:AddImage">
+                      <drw:Destination>
+                        <drw:X>0</drw:X>
+                        <drw:Y>0</drw:Y>
+                        <drw:Width>0</drw:Width>
+                        <drw:Height>0</drw:Height>
+                      </drw:Destination>
+                      <drw:Interpolation>Linear</drw:Interpolation>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>TimestampedImageSide</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp</Selector>
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format>{0:o}</Format>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="Text" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="drw:AddText">
+                      <drw:Text>2020-06-08T14:52:30.0951040-05:00</drw:Text>
+                      <drw:Alignment>Near</drw:Alignment>
+                      <drw:LineAlignment>Near</drw:LineAlignment>
+                      <drw:TextRenderingHint>AntiAliasGridFit</drw:TextRenderingHint>
+                      <drw:Color>
+                        <drw:Val0>255</drw:Val0>
+                        <drw:Val1>255</drw:Val1>
+                        <drw:Val2>255</drw:Val2>
+                        <drw:Val3>255</drw:Val3>
+                      </drw:Color>
+                      <drw:Font>Microsoft Sans Serif, 7.8pt</drw:Font>
+                      <drw:Origin>
+                        <drw:X>0</drw:X>
+                        <drw:Y>450</drw:Y>
+                      </drw:Origin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="drw:DrawCanvas" />
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="6" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source2" />
+                  <Edge From="6" To="11" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="10" To="11" Label="Source2" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>SideCam AVI</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="cv:VideoWriter">
+                  <cv:FileName />
+                  <cv:Suffix>None</cv:Suffix>
+                  <cv:Buffered>true</cv:Buffered>
+                  <cv:Overwrite>false</cv:Overwrite>
+                  <cv:FourCC>FMP4</cv:FourCC>
+                  <cv:FrameRate>30</cv:FrameRate>
+                  <cv:FrameSize>
+                    <cv:Width>0</cv:Width>
+                    <cv:Height>0</cv:Height>
+                  </cv:FrameSize>
+                  <cv:ResizeInterpolation>NearestNeighbor</cv:ResizeInterpolation>
+                </Combinator>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>SideCamStream</Name>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>bkgd sub tracking, side</Name>
+              <Description>color tracking</Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:CropPolygon">
+                      <cv:Regions>
+                        <cv:ArrayOfPoint>
+                          <cv:Point>
+                            <cv:X>53</cv:X>
+                            <cv:Y>117</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>463</cv:X>
+                            <cv:Y>118</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>472</cv:X>
+                            <cv:Y>239</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>492</cv:X>
+                            <cv:Y>245</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>509</cv:X>
+                            <cv:Y>234</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>517</cv:X>
+                            <cv:Y>119</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>927</cv:X>
+                            <cv:Y>124</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>929</cv:X>
+                            <cv:Y>547</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>513</cv:X>
+                            <cv:Y>540</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>511</cv:X>
+                            <cv:Y>457</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>504</cv:X>
+                            <cv:Y>421</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>488</cv:X>
+                            <cv:Y>412</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>476</cv:X>
+                            <cv:Y>420</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>459</cv:X>
+                            <cv:Y>458</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>458</cv:X>
+                            <cv:Y>540</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>48</cv:X>
+                            <cv:Y>539</cv:Y>
+                          </cv:Point>
+                        </cv:ArrayOfPoint>
+                      </cv:Regions>
+                      <cv:MaskType>ToZero</cv:MaskType>
+                      <cv:FillValue>
+                        <cv:Val0>0</cv:Val0>
+                        <cv:Val1>0</cv:Val1>
+                        <cv:Val2>0</cv:Val2>
+                        <cv:Val3>0</cv:Val3>
+                      </cv:FillValue>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:Grayscale" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:BackgroundSubtraction">
+                      <cv:BackgroundFrames>60</cv:BackgroundFrames>
+                      <cv:AdaptationRate>0</cv:AdaptationRate>
+                      <cv:ThresholdValue>18</cv:ThresholdValue>
+                      <cv:ThresholdType>Binary</cv:ThresholdType>
+                      <cv:SubtractionMethod>Dark</cv:SubtractionMethod>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="PublishSubject">
+                    <Name>bkgd sub, side</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:FindContours">
+                      <cv:Mode>External</cv:Mode>
+                      <cv:Method>ChainApproxNone</cv:Method>
+                      <cv:Offset>
+                        <cv:X>0</cv:X>
+                        <cv:Y>0</cv:Y>
+                      </cv:Offset>
+                      <cv:MinArea xsi:nil="true" />
+                      <cv:MaxArea xsi:nil="true" />
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:BinaryRegionAnalysis" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:LargestBinaryRegion" />
+                  </Expression>
+                  <Expression xsi:type="PublishSubject">
+                    <Name>bin region, side</Name>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="Combinator">
+                      <Combinator xsi:type="cv:ConvertColor">
+                        <cv:Conversion>Bgr2Hsv</cv:Conversion>
+                      </Combinator>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="Combinator">
+                      <Combinator xsi:type="cv:HsvThreshold">
+                        <cv:Lower>
+                          <cv:Val0>1</cv:Val0>
+                          <cv:Val1>0</cv:Val1>
+                          <cv:Val2>0</cv:Val2>
+                          <cv:Val3>0</cv:Val3>
+                        </cv:Lower>
+                        <cv:Upper>
+                          <cv:Val0>179</cv:Val0>
+                          <cv:Val1>255</cv:Val1>
+                          <cv:Val2>64</cv:Val2>
+                          <cv:Val3>0</cv:Val3>
+                        </cv:Upper>
+                      </Combinator>
+                    </Builder>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="10" To="11" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="cv:Centroid" />
+            </Expression>
+            <Expression xsi:type="PublishSubject">
+              <Name>Centroid, Side</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>bin region, side</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Area</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Skip">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="Subtract" />
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dsp:Abs" />
+            </Expression>
+            <Expression xsi:type="GreaterThan">
+              <Operand xsi:type="FloatProperty">
+                <Value>20</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="scr:PythonTransform">
+              <scr:Name>Turn Bool to Binomial</scr:Name>
+              <scr:Script>@returns(int)
+def process(tf):
+  if tf == True:
+    return int(True)
+  elif tf == False:
+    return int(False)</scr:Script>
+            </Expression>
+            <Expression xsi:type="GreaterThan">
+              <Operand xsi:type="DoubleProperty">
+                <Value>40</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="scr:PythonTransform">
+              <scr:Name>Turn Bool to Binomial</scr:Name>
+              <scr:Script>@returns(int)
+def process(tf):
+  if tf == True:
+    return int(True)+1
+  elif tf == False:
+    return int(False)</scr:Script>
+            </Expression>
+            <Expression xsi:type="GreaterThan">
+              <Operand xsi:type="DoubleProperty">
+                <Value>60</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="scr:PythonTransform">
+              <scr:Name>Turn Bool to Binomial</scr:Name>
+              <scr:Script>@returns(int)
+def process(tf):
+  if tf == True:
+    return int(True)+2
+  elif tf == False:
+    return int(False)</scr:Script>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>TimeStamp, ms only</Name>
+              <Description>Timestamp, first total milliseconds in day at time of recording, then full date timestamp. Then zipped for ease of use. </Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Zip" />
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="PublishSubject">
+              <Name>Pixel Side Output</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>PxlChangeSide CSV</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="io:CsvWriter">
+              <io:FileName>C:\Users\tglaze\Box\FP Testing\FST_C333_DatCreM2_PixelAreaChangeSide_2020_6_8_(14.52.230)_.CSV</io:FileName>
+              <io:Append>false</io:Append>
+              <io:Overwrite>false</io:Overwrite>
+              <io:Suffix>Timestamp</io:Suffix>
+              <io:IncludeHeader>false</io:IncludeHeader>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Centroid, Side</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>X</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Skip">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Y</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Skip">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="scr:PythonTransform">
+              <scr:Script>import math
+
+@returns(float)
+
+def process(val):
+  distance = math.sqrt(((val[0]-val[1])**2)+((val[2]-val[3])**2))
+  return distance</scr:Script>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>TimeStamp, ms only</Name>
+              <Description>Timestamp, first total milliseconds in day at time of recording, then full date timestamp. Then zipped for ease of use. </Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Zip" />
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>DistanceSide CSV</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="io:CsvWriter">
+              <io:FileName>C:\Users\tglaze\Box\FP Testing\FST_C333_DatCreM2_DistanceSide_2020_6_8_(14.52.230)_.CSV</io:FileName>
+              <io:Append>false</io:Append>
+              <io:Overwrite>false</io:Overwrite>
+              <io:Suffix>Timestamp</io:Suffix>
+              <io:IncludeHeader>false</io:IncludeHeader>
+            </Expression>
+            <Expression xsi:type="PublishSubject">
+              <Name>Distance Side Output</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>CentroidSide CSV</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Centroid, Side</Name>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>TimeStamp, ms only, Side Cam</Name>
+              <Description>Timestamp, total milliseconds in day at time of recording. </Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="io:CsvWriter">
+                <io:FileName>C:\Users\tglaze\Box\FP Testing\FST_C333_DatCreM2_CentroidSIde_2020_6_8_(10.20.878)_.CSV</io:FileName>
+                <io:Append>false</io:Append>
+                <io:Overwrite>false</io:Overwrite>
+                <io:Suffix>Timestamp</io:Suffix>
+                <io:IncludeHeader>false</io:IncludeHeader>
+              </Builder>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="3" Label="Source1" />
+            <Edge From="2" To="3" Label="Source2" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="3" To="6" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
+            <Edge From="7" To="10" Label="Source1" />
+            <Edge From="8" To="9" Label="Source1" />
+            <Edge From="9" To="10" Label="Source2" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="12" To="13" Label="Source1" />
+            <Edge From="13" To="14" Label="Source1" />
+            <Edge From="15" To="16" Label="Source1" />
+            <Edge From="16" To="18" Label="Source1" />
+            <Edge From="16" To="17" Label="Source1" />
+            <Edge From="17" To="18" Label="Source2" />
+            <Edge From="18" To="19" Label="Source1" />
+            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="20" To="23" Label="Source1" />
+            <Edge From="20" To="25" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="22" To="28" Label="Source1" />
+            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="24" To="28" Label="Source2" />
+            <Edge From="25" To="26" Label="Source1" />
+            <Edge From="26" To="28" Label="Source3" />
+            <Edge From="26" To="27" Label="Source1" />
+            <Edge From="27" To="28" Label="Source4" />
+            <Edge From="28" To="29" Label="Source1" />
+            <Edge From="29" To="32" Label="Source1" />
+            <Edge From="30" To="31" Label="Source1" />
+            <Edge From="31" To="32" Label="Source2" />
+            <Edge From="33" To="34" Label="Source1" />
+            <Edge From="33" To="36" Label="Source1" />
+            <Edge From="34" To="38" Label="Source1" />
+            <Edge From="34" To="35" Label="Source1" />
+            <Edge From="35" To="38" Label="Source2" />
+            <Edge From="36" To="37" Label="Source1" />
+            <Edge From="36" To="38" Label="Source3" />
+            <Edge From="37" To="38" Label="Source4" />
+            <Edge From="38" To="39" Label="Source1" />
+            <Edge From="39" To="41" Label="Source1" />
+            <Edge From="39" To="40" Label="Source1" />
+            <Edge From="39" To="45" Label="Source1" />
+            <Edge From="40" To="41" Label="Source2" />
+            <Edge From="41" To="44" Label="Source1" />
+            <Edge From="42" To="43" Label="Source1" />
+            <Edge From="43" To="44" Label="Source2" />
+            <Edge From="46" To="47" Label="Source1" />
+            <Edge From="47" To="51" Label="Source2" />
+            <Edge From="48" To="50" Label="Source1" />
+            <Edge From="48" To="49" Label="Source1" />
+            <Edge From="49" To="50" Label="Source2" />
+            <Edge From="50" To="51" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="GroupWorkflow">
+          <Name>Old X,Y Tracking</Name>
+          <Workflow>
+            <Nodes>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>MotionTrackXTop CSV</Name>
+              </Expression>
+              <Expression xsi:type="PropertyMapping">
+                <PropertyMappings>
+                  <Property Name="FileName" />
+                </PropertyMappings>
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>Centroid, Top</Name>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="GroupWorkflow">
+                  <Name>motion track X</Name>
+                  <Description>Tracks motion of mouse in X direction; if the difference from one frame to next is 
+greater than a threshold (here, set to 2 pixels, to account for jitter), the mouse is 
+considered to be moving (returns a TRUE). If less than the threshold, returns a 
+FALSE. These are saved, along with the current time of day, to a csv file. </Description>
+                  <Workflow>
+                    <Nodes>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="MemberSelector">
+                          <Selector>X</Selector>
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="MemberSelector">
+                          <Selector>X</Selector>
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Skip">
+                            <rx:Count>1</rx:Count>
+                          </Combinator>
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Zip" />
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="Subtract" />
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="Combinator">
+                          <Combinator xsi:type="dsp:Abs" />
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="GreaterThan">
+                          <Operand xsi:type="FloatProperty">
+                            <Value>3</Value>
+                          </Operand>
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="scr:PythonTransform">
+                          <scr:Name>Turn Bool to Binomial</scr:Name>
+                          <scr:Script>@returns(int)
+def process(tf):
+  if tf == True:
+    return int(True)
+  elif tf == False:
+    return int(False)</scr:Script>
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Zip" />
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="WorkflowOutput" />
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Timestamp" />
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="MemberSelector">
+                          <Selector>Timestamp.TimeOfDay</Selector>
+                        </Builder>
+                      </Expression>
+                    </Nodes>
+                    <Edges>
+                      <Edge From="0" To="1" Label="Source1" />
+                      <Edge From="0" To="2" Label="Source1" />
+                      <Edge From="1" To="4" Label="Source1" />
+                      <Edge From="2" To="3" Label="Source1" />
+                      <Edge From="3" To="4" Label="Source2" />
+                      <Edge From="4" To="5" Label="Source1" />
+                      <Edge From="5" To="6" Label="Source1" />
+                      <Edge From="6" To="7" Label="Source1" />
+                      <Edge From="7" To="8" Label="Source1" />
+                      <Edge From="8" To="9" Label="Source1" />
+                      <Edge From="9" To="10" Label="Source1" />
+                      <Edge From="11" To="12" Label="Source1" />
+                    </Edges>
+                  </Workflow>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="GroupWorkflow">
+                <Name>TimeStamp, ms only, Top X</Name>
+                <Description>Timestamp, first total milliseconds in day at time of recording, then full date timestamp. Then zipped for ease of use. </Description>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Timestamp" />
+                    </Expression>
+                    <Expression xsi:type="MemberSelector">
+                      <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+                    </Expression>
+                    <Expression xsi:type="Disable">
+                      <Builder xsi:type="Combinator">
+                        <Combinator xsi:type="rx:Zip" />
+                      </Builder>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                    <Edge From="1" To="2" Label="Source1" />
+                    <Edge From="2" To="3" Label="Source1" />
+                    <Edge From="3" To="4" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Zip" />
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="io:CsvWriter">
+                  <io:FileName>C:\Users\tglaze\Box\FP Testing\FST_C333_DatCreM2_MotionTrackXTop_2020_6_8_(10.20.878)_.CSV</io:FileName>
+                  <io:Append>false</io:Append>
+                  <io:Overwrite>false</io:Overwrite>
+                  <io:Suffix>Timestamp</io:Suffix>
+                  <io:IncludeHeader>false</io:IncludeHeader>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="SubscribeSubject">
+                  <Name>MotionTrackYTop CSV</Name>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="PropertyMapping">
+                  <PropertyMappings>
+                    <Property Name="FileName" />
+                  </PropertyMappings>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>Centroid, Top</Name>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="GroupWorkflow">
+                  <Name>motion track y</Name>
+                  <Description>Tracks motion of mouse in Y direction; if the difference from one frame to next is 
+greater than a threshold (here, set to 2 pixels, to account for jitter), the mouse is 
+considered to be moving (returns a TRUE). If less than the threshold, returns a 
+FALSE. These are saved, along with the current time of day, to a csv file. </Description>
+                  <Workflow>
+                    <Nodes>
+                      <Expression xsi:type="WorkflowInput">
+                        <Name>Source1</Name>
+                      </Expression>
+                      <Expression xsi:type="MemberSelector">
+                        <Selector>Y</Selector>
+                      </Expression>
+                      <Expression xsi:type="Combinator">
+                        <Combinator xsi:type="rx:Skip">
+                          <rx:Count>1</rx:Count>
+                        </Combinator>
+                      </Expression>
+                      <Expression xsi:type="MemberSelector">
+                        <Selector>Y</Selector>
+                      </Expression>
+                      <Expression xsi:type="Combinator">
+                        <Combinator xsi:type="rx:Zip" />
+                      </Expression>
+                      <Expression xsi:type="Subtract" />
+                      <Expression xsi:type="Combinator">
+                        <Combinator xsi:type="dsp:Abs" />
+                      </Expression>
+                      <Expression xsi:type="GreaterThan">
+                        <Operand xsi:type="FloatProperty">
+                          <Value>3</Value>
+                        </Operand>
+                      </Expression>
+                      <Expression xsi:type="scr:PythonTransform">
+                        <scr:Name>Turn Bool to Binomial</scr:Name>
+                        <scr:Script>@returns(int)
+def process(tf):
+  if tf == True:
+    return int(True)
+  elif tf == False:
+    return int(False)</scr:Script>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Zip" />
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="WorkflowOutput" />
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Timestamp" />
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="MemberSelector">
+                          <Selector>Timestamp.TimeOfDay</Selector>
+                        </Builder>
+                      </Expression>
+                    </Nodes>
+                    <Edges>
+                      <Edge From="0" To="1" Label="Source1" />
+                      <Edge From="0" To="3" Label="Source1" />
+                      <Edge From="1" To="2" Label="Source1" />
+                      <Edge From="2" To="4" Label="Source2" />
+                      <Edge From="3" To="4" Label="Source1" />
+                      <Edge From="4" To="5" Label="Source1" />
+                      <Edge From="5" To="6" Label="Source1" />
+                      <Edge From="6" To="7" Label="Source1" />
+                      <Edge From="7" To="8" Label="Source1" />
+                      <Edge From="8" To="9" Label="Source1" />
+                      <Edge From="9" To="10" Label="Source1" />
+                      <Edge From="11" To="12" Label="Source1" />
+                    </Edges>
+                  </Workflow>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="GroupWorkflow">
+                  <Name>TimeStamp, ms only, Top Y</Name>
+                  <Description>Timestamp, first total milliseconds in day at time of recording, then full date timestamp. Then zipped for ease of use. </Description>
+                  <Workflow>
+                    <Nodes>
+                      <Expression xsi:type="WorkflowInput">
+                        <Name>Source1</Name>
+                      </Expression>
+                      <Expression xsi:type="Combinator">
+                        <Combinator xsi:type="rx:Timestamp" />
+                      </Expression>
+                      <Expression xsi:type="MemberSelector">
+                        <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+                      </Expression>
+                      <Expression xsi:type="Disable">
+                        <Builder xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Zip" />
+                        </Builder>
+                      </Expression>
+                      <Expression xsi:type="WorkflowOutput" />
+                    </Nodes>
+                    <Edges>
+                      <Edge From="0" To="1" Label="Source1" />
+                      <Edge From="1" To="2" Label="Source1" />
+                      <Edge From="2" To="3" Label="Source1" />
+                      <Edge From="3" To="4" Label="Source1" />
+                    </Edges>
+                  </Workflow>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="Combinator">
+                  <Combinator xsi:type="rx:Zip" />
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="io:CsvWriter">
+                  <io:FileName />
+                  <io:Append>false</io:Append>
+                  <io:Overwrite>false</io:Overwrite>
+                  <io:Suffix>Timestamp</io:Suffix>
+                  <io:IncludeHeader>false</io:IncludeHeader>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>MotionTrackXSide CSV</Name>
+              </Expression>
+              <Expression xsi:type="PropertyMapping">
+                <PropertyMappings>
+                  <Property Name="FileName" />
+                </PropertyMappings>
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>Centroid, Side</Name>
+              </Expression>
+              <Expression xsi:type="GroupWorkflow">
+                <Name>motion track X</Name>
+                <Description>Tracks motion of mouse in X direction; if the difference from one frame to next is 
+greater than a threshold (here, set to 2 pixels, to account for jitter), the mouse is 
+considered to be moving (returns a TRUE). If less than the threshold, returns a 
+FALSE. These are saved, along with the current time of day, to a csv file. </Description>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="MemberSelector">
+                      <Selector>X</Selector>
+                    </Expression>
+                    <Expression xsi:type="MemberSelector">
+                      <Selector>X</Selector>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Skip">
+                        <rx:Count>1</rx:Count>
+                      </Combinator>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Zip" />
+                    </Expression>
+                    <Expression xsi:type="Subtract" />
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="dsp:Abs" />
+                    </Expression>
+                    <Expression xsi:type="GreaterThan">
+                      <Operand xsi:type="FloatProperty">
+                        <Value>3</Value>
+                      </Operand>
+                    </Expression>
+                    <Expression xsi:type="scr:PythonTransform">
+                      <scr:Name>Turn Bool to Binomial</scr:Name>
+                      <scr:Script>@returns(int)
+def process(tf):
+  if tf == True:
+    return int(True)
+  elif tf == False:
+    return int(False)</scr:Script>
+                    </Expression>
+                    <Expression xsi:type="Disable">
+                      <Builder xsi:type="Combinator">
+                        <Combinator xsi:type="rx:Zip" />
+                      </Builder>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                    <Expression xsi:type="Disable">
+                      <Builder xsi:type="Combinator">
+                        <Combinator xsi:type="rx:Timestamp" />
+                      </Builder>
+                    </Expression>
+                    <Expression xsi:type="Disable">
+                      <Builder xsi:type="MemberSelector">
+                        <Selector>Timestamp.TimeOfDay</Selector>
+                      </Builder>
+                    </Expression>
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                    <Edge From="0" To="2" Label="Source1" />
+                    <Edge From="1" To="4" Label="Source1" />
+                    <Edge From="2" To="3" Label="Source1" />
+                    <Edge From="3" To="4" Label="Source2" />
+                    <Edge From="4" To="5" Label="Source1" />
+                    <Edge From="5" To="6" Label="Source1" />
+                    <Edge From="6" To="7" Label="Source1" />
+                    <Edge From="7" To="8" Label="Source1" />
+                    <Edge From="8" To="9" Label="Source1" />
+                    <Edge From="9" To="10" Label="Source1" />
+                    <Edge From="11" To="12" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Expression>
+              <Expression xsi:type="GroupWorkflow">
+                <Name>TimeStamp, ms only, Side X</Name>
+                <Description>Timestamp, first total milliseconds in day at time of recording, then full date timestamp. Then zipped for ease of use. </Description>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Timestamp" />
+                    </Expression>
+                    <Expression xsi:type="MemberSelector">
+                      <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+                    </Expression>
+                    <Expression xsi:type="Disable">
+                      <Builder xsi:type="Combinator">
+                        <Combinator xsi:type="rx:Zip" />
+                      </Builder>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                    <Edge From="1" To="2" Label="Source1" />
+                    <Edge From="2" To="3" Label="Source1" />
+                    <Edge From="3" To="4" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Zip" />
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="io:CsvWriter">
+                  <io:FileName>C:\Users\tglaze\Box\FP Testing\FST_C333_DatCreM2_MotionTrackXSide_2020_6_8_(10.20.878)_.CSV</io:FileName>
+                  <io:Append>false</io:Append>
+                  <io:Overwrite>false</io:Overwrite>
+                  <io:Suffix>Timestamp</io:Suffix>
+                  <io:IncludeHeader>false</io:IncludeHeader>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>MotionTrackYSide CSV</Name>
+              </Expression>
+              <Expression xsi:type="PropertyMapping">
+                <PropertyMappings>
+                  <Property Name="FileName" />
+                </PropertyMappings>
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>Centroid, Side</Name>
+              </Expression>
+              <Expression xsi:type="GroupWorkflow">
+                <Name>motion track y</Name>
+                <Description>Tracks motion of mouse in Y direction; if the difference from one frame to next is 
+greater than a threshold (here, set to 2 pixels, to account for jitter), the mouse is 
+considered to be moving (returns a TRUE). If less than the threshold, returns a 
+FALSE. These are saved, along with the current time of day, to a csv file. </Description>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="MemberSelector">
+                      <Selector>Y</Selector>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Skip">
+                        <rx:Count>1</rx:Count>
+                      </Combinator>
+                    </Expression>
+                    <Expression xsi:type="MemberSelector">
+                      <Selector>Y</Selector>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Zip" />
+                    </Expression>
+                    <Expression xsi:type="Subtract" />
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="dsp:Abs" />
+                    </Expression>
+                    <Expression xsi:type="GreaterThan">
+                      <Operand xsi:type="FloatProperty">
+                        <Value>3</Value>
+                      </Operand>
+                    </Expression>
+                    <Expression xsi:type="scr:PythonTransform">
+                      <scr:Name>Turn Bool to Binomial</scr:Name>
+                      <scr:Script>@returns(int)
+def process(tf):
+  if tf == True:
+    return int(True)
+  elif tf == False:
+    return int(False)</scr:Script>
+                    </Expression>
+                    <Expression xsi:type="Disable">
+                      <Builder xsi:type="Combinator">
+                        <Combinator xsi:type="rx:Zip" />
+                      </Builder>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                    <Expression xsi:type="Disable">
+                      <Builder xsi:type="Combinator">
+                        <Combinator xsi:type="rx:Timestamp" />
+                      </Builder>
+                    </Expression>
+                    <Expression xsi:type="Disable">
+                      <Builder xsi:type="MemberSelector">
+                        <Selector>Timestamp.TimeOfDay</Selector>
+                      </Builder>
+                    </Expression>
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                    <Edge From="0" To="3" Label="Source1" />
+                    <Edge From="1" To="2" Label="Source1" />
+                    <Edge From="2" To="4" Label="Source2" />
+                    <Edge From="3" To="4" Label="Source1" />
+                    <Edge From="4" To="5" Label="Source1" />
+                    <Edge From="5" To="6" Label="Source1" />
+                    <Edge From="6" To="7" Label="Source1" />
+                    <Edge From="7" To="8" Label="Source1" />
+                    <Edge From="8" To="9" Label="Source1" />
+                    <Edge From="9" To="10" Label="Source1" />
+                    <Edge From="11" To="12" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Expression>
+              <Expression xsi:type="GroupWorkflow">
+                <Name>TimeStamp, ms only, Side Y</Name>
+                <Description>Timestamp, first total milliseconds in day at time of recording, then full date timestamp. Then zipped for ease of use. </Description>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Timestamp" />
+                    </Expression>
+                    <Expression xsi:type="MemberSelector">
+                      <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+                    </Expression>
+                    <Expression xsi:type="Disable">
+                      <Builder xsi:type="Combinator">
+                        <Combinator xsi:type="rx:Zip" />
+                      </Builder>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                    <Edge From="1" To="2" Label="Source1" />
+                    <Edge From="2" To="3" Label="Source1" />
+                    <Edge From="3" To="4" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Zip" />
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="io:CsvWriter">
+                  <io:FileName>C:\Users\tglaze\Box\FP Testing\FST_C333_DatCreM2_MotionTrackYSide_2020_6_8_(10.20.878)_.CSV</io:FileName>
+                  <io:Append>false</io:Append>
+                  <io:Overwrite>false</io:Overwrite>
+                  <io:Suffix>Timestamp</io:Suffix>
+                  <io:IncludeHeader>false</io:IncludeHeader>
+                </Builder>
+              </Expression>
+            </Nodes>
+            <Edges>
+              <Edge From="0" To="1" Label="Source1" />
+              <Edge From="1" To="6" Label="Source2" />
+              <Edge From="2" To="3" Label="Source1" />
+              <Edge From="3" To="5" Label="Source1" />
+              <Edge From="3" To="4" Label="Source1" />
+              <Edge From="4" To="5" Label="Source2" />
+              <Edge From="5" To="6" Label="Source1" />
+              <Edge From="7" To="8" Label="Source1" />
+              <Edge From="8" To="13" Label="Source2" />
+              <Edge From="9" To="10" Label="Source1" />
+              <Edge From="10" To="12" Label="Source1" />
+              <Edge From="10" To="11" Label="Source1" />
+              <Edge From="11" To="12" Label="Source2" />
+              <Edge From="12" To="13" Label="Source1" />
+              <Edge From="14" To="15" Label="Source1" />
+              <Edge From="15" To="20" Label="Source2" />
+              <Edge From="16" To="17" Label="Source1" />
+              <Edge From="17" To="19" Label="Source1" />
+              <Edge From="17" To="18" Label="Source1" />
+              <Edge From="18" To="19" Label="Source2" />
+              <Edge From="19" To="20" Label="Source1" />
+              <Edge From="21" To="22" Label="Source1" />
+              <Edge From="22" To="27" Label="Source2" />
+              <Edge From="23" To="24" Label="Source1" />
+              <Edge From="24" To="26" Label="Source1" />
+              <Edge From="24" To="25" Label="Source1" />
+              <Edge From="25" To="26" Label="Source2" />
+              <Edge From="26" To="27" Label="Source1" />
+            </Edges>
+          </Workflow>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>Time-lock Single CSV File</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>Distance Side Output</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>Pixel Side Output</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Centroid, Side</Name>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>Distance Top Output</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>Pixel Top Output</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Centroid, Top</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>FP Output 560 mrk</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>FP Output 560 unmrk</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>FP Output 470 mrk</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>FP Output 470 unmrk</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Tot ms in day Output</Name>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:CombineLatest" />
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="io:CsvWriter">
+              <io:Append>false</io:Append>
+              <io:Overwrite>false</io:Overwrite>
+              <io:Suffix>None</io:Suffix>
+              <io:IncludeHeader>false</io:IncludeHeader>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject" />
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="11" Label="Source11" />
+            <Edge From="1" To="11" Label="Source10" />
+            <Edge From="2" To="11" Label="Source9" />
+            <Edge From="3" To="11" Label="Source8" />
+            <Edge From="4" To="11" Label="Source7" />
+            <Edge From="5" To="11" Label="Source6" />
+            <Edge From="6" To="11" Label="Source5" />
+            <Edge From="7" To="11" Label="Source4" />
+            <Edge From="8" To="11" Label="Source3" />
+            <Edge From="9" To="11" Label="Source2" />
+            <Edge From="10" To="11" Label="Source1" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="12" To="13" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+    </Nodes>
+    <Edges>
+      <Edge From="0" To="1" Label="Source1" />
+      <Edge From="1" To="2" Label="Source1" />
+    </Edges>
+  </Workflow>
+</WorkflowBuilder>
